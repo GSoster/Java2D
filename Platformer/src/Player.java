@@ -181,6 +181,13 @@ public class Player {
 		x = tempx;
 		y = tempy;
 		
+		//Scrolling!!
+		//movendo o mapa!
+		//o codigo abaixo serve para manter o player no centro da tela.
+		tileMap.setX((int)(GamePanel.WIDTH / 2 - this.x));
+		tileMap.setY((int)(GamePanel.HEIGHT / 2 - this.y));
+		
+		
 	}
 	
 	public void draw(Graphics2D g){
