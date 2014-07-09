@@ -1,13 +1,15 @@
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.swing.JPanel;
 
 
-public class GamePanel extends JPanel implements Runnable{
+public class GamePanel extends JPanel implements Runnable, KeyListener{
 
 	//Constantes
 	public static final int WIDTH = 400;
@@ -39,6 +41,9 @@ public class GamePanel extends JPanel implements Runnable{
 			thread = new Thread(this);
 			thread.start();
 		}
+		
+		addKeyListener(this);
+		
 	}
 	
 	public void run(){
@@ -76,6 +81,8 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		tileMap = new TileMap("src/testmap.txt", 32);
 		player = new Player(tileMap);
+		player.setx(50);
+		player.sety(50);
 	}
 		
 	/////////////////////////////////////////////////////////
@@ -97,4 +104,34 @@ public class GamePanel extends JPanel implements Runnable{
 		g2.dispose();
 	}
 	
+	
+	public void keyTyped(KeyEvent key){}
+	
+	public void keyPressed(KeyEvent key){
+		int code = key.getKeyCode();
+		//caso tenha tentado ir p/esquerda
+		if(code == KeyEvent.VK_LEFT){
+			player.setLeft(true);
+		}
+		//caso tenha tentado ir p/direita
+		if(code == KeyEvent.VK_RIGHT){
+			player.setRight(true);
+		}		
+		//se precionar o botao de pular
+		if(code == KeyEvent.VK_SPACE){
+			player.setJumping(true);
+		}
+	}
+	
+	public void keyReleased(KeyEvent key){
+		int code = key.getKeyCode();
+		//caso tenha parado de  ir p/esquerda
+		if(code == KeyEvent.VK_LEFT){
+			player.setLeft(false);
+		}
+		//caso tenha parado de ir p/direita
+		if(code == KeyEvent.VK_RIGHT){
+			player.setRight(false);
+		}		
+	}
 }

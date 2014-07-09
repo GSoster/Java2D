@@ -87,4 +87,12 @@ public class TileMap {
 		return y / tileSize;
 	}
 	
+	public int getTile(int row, int col){
+		return map[row][col];
+	}
+	
+	public int getTileSize(){
+		return tileSize;
+	}
+	
 }
