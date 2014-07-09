@@ -6,6 +6,7 @@ import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
@@ -14,7 +15,10 @@ public class Game extends JPanel {
 	Ball ball = new Ball(this);
 	Racquet racquet = new Racquet(this);
 
-	
+	/**
+	 * Recebe quais sao as teclas precionadas pelo player e repassa
+	 * para a classe Racquet que trabalhara com essa informacao
+	 */
 	public Game(){
 		addKeyListener(new KeyListener() {
 			
@@ -33,11 +37,28 @@ public class Game extends JPanel {
 		
 	}
 	
+	/**
+	 * Atualiza a movimentacao dos dois componentes do jogo:	
+	 * A racquet e a bola
+	 */
 	public void move() {
 		ball.move();
 		racquet.move();
 	}
 
+	/**
+	 * Exibe uma janela popup e termina o jogo
+	 */
+	public void gameOver(){
+		JOptionPane.showMessageDialog(this,"Game Over", "Game OVer!", JOptionPane.YES_NO_OPTION);
+		System.exit(ABORT);
+	}
+	
+	/**
+	 * O antialiasing serve para deixar as bordas dos elementos mais suaves
+	 * o metodo tambem chama o metodo paint da bola e raquete para que 
+	 * a imagem de ambas seja atualizada na tela.
+	 */
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
