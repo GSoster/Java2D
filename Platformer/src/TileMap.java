@@ -21,6 +21,13 @@ public class TileMap {
 	private BufferedImage tileSet;
 	private Tile[][] tiles;
 	
+	//campos p/que o mapa seja exibido apenas ate o limite dos sprites
+	private int minX;
+	private int minY;
+	private int maxX = 0;
+	private int maxY = 0;
+	
+	
 	
 	public TileMap(String s, int tileSize){
 		this.tileSize = tileSize;		
@@ -34,6 +41,9 @@ public class TileMap {
 			mapHeight = Integer.parseInt(br.readLine());
 			
 			map = new int [mapHeight][mapWidth];
+			
+			minX = GamePanel.WIDTH - mapWidth * tileSize;
+			minY = GamePanel.HEIGHT- mapHeight * tileSize;
 			
 			String delimiter = "\\s+";//delimitador usado no mapa (qualquer espaco em branco)
 			for(int row = 0; row < mapHeight; row++){//le as colunas
@@ -107,8 +117,24 @@ public class TileMap {
 	//Getters e Setters
 	public int getX(){return x;}
 	public int getY(){return y;}	
-	public void setX(int i){x = i;}
-	public void setY(int i){y = i;}
+	public void setX(int i){
+		x = i;
+		if(x > maxX){
+			x = maxX;
+		}
+		if(x < minX){
+			x = minX;
+		}
+	}
+	public void setY(int i){
+		y = i;
+		if(y > maxY){
+			y = maxY;
+		}
+		if(y < minY){
+			y = minY;
+		}
+	}
 	public int getColTile(int x){return x / tileSize;}
 	public int getRowTile(int y){return y / tileSize;}
 	public int getTile(int row, int col){return map[row][col];}

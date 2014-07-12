@@ -1,5 +1,8 @@
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.image.*;
+import javax.imageio.ImageIO;
+import java.io.File;;
 
 
 public class Player {
@@ -34,12 +37,22 @@ public class Player {
 	private boolean bottomRight;
 	
 	
+	//animacoes
+	private Animation animation;
+	private BufferedImage[] idleSprites;
+	private BufferedImage[] walkingSprites;
+	private BufferedImage[] jumpingSprites;
+	private BufferedImage[] fallingSprites;
+	private boolean facingLeft; //todos os sprites foram feitos olhando p/esquerda
+	//por isso caso estejam indo para outra direcao precisamos tratar
+	
+	
 	public Player(TileMap tm){
 		
 		this.tileMap = tm;
 		
-		width = 20;
-		height = 20;
+		width = 22;//tamanho do sprite do nosso player
+		height = 22;//tamanho do sprite do nosso player
 		
 		moveSpeed = 0.6;
 		maxSpeed = 4.2;
@@ -48,6 +61,32 @@ public class Player {
 		jumpStart = -11.0;
 		gravity = 0.64;
 		
+		try{
+			idleSprites = new BufferedImage[1];//so temos um sprite p/essa animacao
+			fallingSprites = new BufferedImage[1];//so temos um sprite p/essa animacao
+			jumpingSprites = new BufferedImage[1];//so temos um sprite p/essa animacao
+			walkingSprites = new BufferedImage[6];//temos 6 sprite p/essa animacao
+			//lendo os sprites:
+			idleSprites[0] = ImageIO.read(new File("src/graphics/player/kirbyidle.gif"));
+			fallingSprites[0] = ImageIO.read(new File("src/graphics/player/kirbyfall.gif"));
+			jumpingSprites[0] = ImageIO.read(new File("src/graphics/player/kirbyjump.gif"));
+			//como os sprites de walking sao 6, precisamos percorrer um loop para preencher cada um
+			//usaremos subImage para isso (da mesma forma que p/o mapa)
+			
+			BufferedImage image = ImageIO.read(new File("src/graphics/player/kirbywalk.gif"));
+			for(int i = 0; i < walkingSprites.length; i++){
+				walkingSprites[i] = image.getSubimage(
+						i * width + i,
+						0,
+						width,
+						height);
+			}
+			animation = new Animation();
+			facingLeft = false;//para saber p /onde o player esta olhando
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		
 	}
 	//Seta a posicao do player
@@ -187,7 +226,42 @@ public class Player {
 		tileMap.setX((int)(GamePanel.WIDTH / 2 - this.x));
 		tileMap.setY((int)(GamePanel.HEIGHT / 2 - this.y));
 		
+		//########################  ANIMACOES  ####################
+		//animacao
+		//sprite animation
 		
+		//se estiver indo p/direita ou esquerda, usa a a animacao de caminhar
+		if(left || right){
+			animation.setFrames(walkingSprites);
+			animation.setDelay(100);
+			
+		}else{//se estiver parado, usa a animacao de parado (idle)
+			animation.setFrames(idleSprites);
+			animation.setDelay(-1);//p/nao trocar de animacao ate que receba nova ordem
+		}
+		
+		if(dy < 0){//movendo p/cima
+			animation.setFrames(jumpingSprites);
+			animation.setDelay(-1);
+		}
+		if(dy > 0 && falling){//movendo p/baixo
+			animation.setFrames(fallingSprites);
+			animation.setDelay(-1);
+		}
+		
+		if(dy == 0 && falling){
+			animation.setFrames(fallingSprites);
+			animation.setDelay(-1);
+		}
+		
+		animation.update();
+		
+		//setando a variavel facingLeft
+		if(dx > 0){
+			facingLeft = false;
+		}if(dx < 0){
+			facingLeft = true;
+		}
 	}
 	
 	public void draw(Graphics2D g){
@@ -195,13 +269,26 @@ public class Player {
 		int tx = tileMap.getX();
 		int ty = tileMap.getY();
 		
-		g.setColor(Color.RED);
-		g.fillRect(
-				(int)(tx + x - width / 2),
-				(int)(ty + y - height / 2),
-				width,
-				height				
-				);
+		//como nossos sprites estao virados p/esquerda
+		//caso o player esteja olhando p/esquerda, basta carregar os sprites
+		if(facingLeft){
+			g.drawImage(
+					animation.getImage(),
+					(int)(tx + x - width / 2),
+					(int)(ty + y - height / 2),
+					null
+					);
+		}else{
+			//caso o player esteja olhando p/direita, eh necessario tratar os sprites
+			g.drawImage(
+					animation.getImage(),
+					(int)(tx + x - width / 2 + width),//tratando imagem p/ficar virara p/direita
+					(int)(ty + y - height/ 2),//tratando imagem p/ficar virara p/direita
+					-width,
+					height,
+					null
+					);
+		}
 	}
 	
 }
