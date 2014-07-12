@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -79,7 +80,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		g = (Graphics2D) image.getGraphics();
 		
-		tileMap = new TileMap("src/testmap.txt", 32);
+		tileMap = new TileMap("src/testmap2.txt", 32);
+		tileMap.loadTiles("src/graphics/tileset.gif");
 		player = new Player(tileMap);
 		player.setx(50);
 		player.sety(50);
@@ -94,6 +96,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 	
 	
 	private void render(){		
+		//limpa a tela preenchendo tuco com preto
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, WIDTH, HEIGHT);
+		
 		tileMap.draw(g);
 		player.draw(g);
 	}

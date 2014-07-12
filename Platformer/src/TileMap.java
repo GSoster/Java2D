@@ -1,7 +1,11 @@
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
+
+import javax.imageio.ImageIO;
 
 
 public class TileMap {
@@ -13,6 +17,9 @@ public class TileMap {
 	private int [][] map;
 	private int mapWidth;
 	private int mapHeight;
+	
+	private BufferedImage tileSet;
+	private Tile[][] tiles;
 	
 	
 	public TileMap(String s, int tileSize){
@@ -28,7 +35,7 @@ public class TileMap {
 			
 			map = new int [mapHeight][mapWidth];
 			
-			String delimiter = " ";//delimitador usado no mapa
+			String delimiter = "\\s+";//delimitador usado no mapa (qualquer espaco em branco)
 			for(int row = 0; row < mapHeight; row++){//le as colunas
 				String line = br.readLine();//le a linha inteira de determinada coluna
 				String[] tokens = line.split(delimiter);
@@ -53,46 +60,65 @@ public class TileMap {
 				int rc = map[row][col];				
 				//caso a informacao do nosso arquivo de mapa
 				//nesta determinada posicao do array bidimensional
-				//seja 0 (ZERO), entao o espaco fica preto
-				if(rc == 0){					
-					g.setColor(Color.BLACK);						
-				}
-				//se for 1, o espaco ficara branco
-				if(rc == 1){					
-					g.setColor(Color.WHITE);
-				}
-				//desenha um retangulo na tela.
-				//posicao x, posicao y da tela e tamanho do retangulo
-								
-				g.fillRect(x + col * tileSize, y + row * tileSize, tileSize, tileSize);
+				int r = rc / tiles[0].length;
+				int c = rc % tiles[0].length;
+				
+				g.drawImage(
+						tiles[r][c].getImage(),
+						x + col * tileSize,
+						y + row * tileSize,
+						null
+						);
+				
 								
 			}
 		}
 	}
 	
-	public int getX(){
-		return x;
-	}
-	public int getY(){
-		return y;
+	public void loadTiles(String nomeArquivo){
+		try{
+			
+			tileSet = ImageIO.read(new File(nomeArquivo));
+			int numTilesAcross = (tileSet.getWidth()+1) / (tileSize + 1);//+1 porque tem 1 pixel de borda entre os tiles.
+			tiles = new Tile[2][numTilesAcross];//[2] = o arquivo tem 2 linhas
+			
+			BufferedImage subImage;
+			for(int col = 0; col < numTilesAcross; col++){
+				//a funcao getSubImage retorna uma parte da imagem , no nosso caso um tile
+				subImage = tileSet.getSubimage(col * tileSize + col,
+						0,
+						tileSize,
+						tileSize);
+				tiles[0][col] = new Tile(subImage, false);//false = nao blocked, pode caminhar
+				subImage = tileSet.getSubimage(col * tileSize + col,
+						tileSize + 1,
+						tileSize,
+						tileSize);
+				tiles[1][col] = new Tile(subImage, true);//nao pode caminhar, blocked
+				
+			}
+			
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 	
+	//Getters e Setters
+	public int getX(){return x;}
+	public int getY(){return y;}	
 	public void setX(int i){x = i;}
 	public void setY(int i){y = i;}
+	public int getColTile(int x){return x / tileSize;}
+	public int getRowTile(int y){return y / tileSize;}
+	public int getTile(int row, int col){return map[row][col];}
+	public int getTileSize(){return tileSize;}
+	public boolean isBlocked(int row, int col){
+		int rc = map[row][col];
+		int r = rc / tiles[0].length;
+		int c = rc % tiles[0].length;
+		return tiles[r][c].isBlocked();
+	}
 	
-	public int getColTile(int x){
-		return x / tileSize;
-	}
-	public int getRowTile(int y){
-		return y / tileSize;
-	}
-	
-	public int getTile(int row, int col){
-		return map[row][col];
-	}
-	
-	public int getTileSize(){
-		return tileSize;
-	}
 	
 }

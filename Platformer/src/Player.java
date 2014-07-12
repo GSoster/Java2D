@@ -72,10 +72,10 @@ public class Player {
 		int rightTile = tileMap.getColTile((int) (x + width / 2) -1 );//para nao exceder o limit (OutOfBounds)
 		int topTile = tileMap.getRowTile((int) (y - height / 2));
 		int bottomTile = tileMap.getRowTile((int) (y + height / 2) -1);//mesma coisa que o de cima.
-		topLeft = tileMap.getTile(topTile, leftTile) == 0;//verifica se nao eh igual a zero pq o ZERO eh o tile bloqueado
-		topRight = tileMap.getTile(topTile, rightTile) == 0;
-		bottomLeft = tileMap.getTile(bottomTile, leftTile) == 0;
-		bottomRight = tileMap.getTile(bottomTile, rightTile) == 0;
+		topLeft = tileMap.isBlocked(topTile, leftTile);//verifica se nao eh igual a zero pq o ZERO eh o tile bloqueado
+		topRight = tileMap.isBlocked(topTile, rightTile);
+		bottomLeft = tileMap.isBlocked(bottomTile, leftTile);
+		bottomRight = tileMap.isBlocked(bottomTile, rightTile);
 		
 	}
 	
