@@ -24,22 +24,27 @@ public class Ball {
 	void move(){
 		boolean changeDirection = true;
 		if(x + xa < 0){//se bater na borda esquerda
-			xa = 1;//passa a se mover para a direita
+			xa = game.speed;//passa a se mover para a direita
 		}else if(x + xa > game.getWidth() - DIAMETER){//se bater na borda direta
-			xa = -1;// passa a se mover para a esquerda 
+			xa = -game.speed;// passa a se mover para a esquerda 
 		}else if(y + ya < 0){//se bater na borda superior
-			ya = 1;//passa a se mover p/baixo
+			ya = game.speed;//passa a se mover p/baixo
 		}else if(y + ya > game.getHeight() - DIAMETER){//se bater na borda inferior
-			ya = -1;//passa a se mover p/cima
+			ya = -game.speed;//passa a se mover p/cima
 			//game.gameOver();
+		}else if(collision()){
+			ya = -game.speed;//passa a se mover para cima
+			y = game.racquet.getTopY() - DIAMETER;//posiciona a bola na borda superior da raquete
+			game.score++;
+			game.speed++;//aumenta a velocidade
+			if(game.speed > game.maxSpeed){
+				game.speed = game.maxSpeed;
+			}
 		}else{
 			changeDirection = false;
 		}
 		
-		if(collision()){
-			ya = -1;//passa a se mover para cima
-			y = game.racquet.getTopY() - DIAMETER;//posiciona a bola na borda superior da raquete
-		}
+		
 		if(changeDirection)
 				Sound.BALL.play();
 		

@@ -1,5 +1,7 @@
 package com.miniTennis;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -14,6 +16,13 @@ public class Game extends JPanel {
 
 	Ball ball = new Ball(this);
 	Racquet racquet = new Racquet(this);
+	int speed = 1;
+	int maxSpeed = 7;
+	int score = 0;
+	private int getScore(){
+		return this.score;
+	}
+	
 
 	/**
 	 * Recebe quais sao as teclas precionadas pelo player e repassa
@@ -50,7 +59,7 @@ public class Game extends JPanel {
 	 * Exibe uma janela popup e termina o jogo
 	 */
 	public void gameOver(){
-		JOptionPane.showMessageDialog(this,"Game Over", "Game OVer!", JOptionPane.YES_NO_OPTION);
+		JOptionPane.showMessageDialog(this,"Sua pontuacao foi: "+ this.getScore(), "Game OVer!", JOptionPane.YES_NO_OPTION);
 		System.exit(ABORT);
 	}
 	
@@ -67,6 +76,11 @@ public class Game extends JPanel {
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		ball.paint(g2d);
 		racquet.paint(g2d);
+		//score:
+		g2d.setColor(Color.GRAY);
+		g2d.setFont(new Font("Verdana", Font.BOLD, 30));
+		g2d.drawString(String.valueOf(getScore()), 10, 30);
+		
 	}
 
 	
