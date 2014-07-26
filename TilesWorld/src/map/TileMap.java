@@ -13,7 +13,7 @@ public class TileMap {
 
 	private int lastPlayerYPosition;
 	private int lastPlayerXPostition;
-	
+
 	// ////////////////////////
 	// 0 -> ceu/background (azul)
 	// 1 -> grama (bloco verde)
@@ -43,46 +43,41 @@ public class TileMap {
 
 		}
 	}
-	
-	
-	public void setPlayerPosition(int x, int y){
+
+	public void setPlayerPosition(int x, int y) {
 		lastPlayerXPostition = x;
 		lastPlayerYPosition = y;
 		this.map[y][x] = -1;
 	}
-	
 
 	// Metodo responsavel gerar a parte grafica
 	public void draw(Graphics2D g) {
 		// percorre o y
 		for (int y = 0; y < numOfRows; y++) {
 			// percorre o x
-			for (int x = 0; x < numOfCols; x++) {
-				// debugging
+			for (int x = 0; x < numOfCols; x++) { 
+				switch (map[y][x]) {
+				// azul (backGround)
+				case 0:
+					g.setColor(Color.BLUE);
+					g.fillRect(x * tileSize, y * tileSize, tileSize,
+							tileSize);
+					break;
+				// Verde (grama)
+				case 1:
+					g.setColor(Color.GREEN);
+					g.fillRect(x * tileSize, y * tileSize, tileSize ,
+							tileSize );
+					break;
+				}
+				//Debugging
 				if (this.debug) {
 					g.setColor(Color.RED);
 					g.drawRect(x * tileSize, y * tileSize, tileSize, tileSize);
 				}
-							
-				switch (map[y][x]) {
-				//azul (backGround)
-				case 0:
-					g.setColor(Color.BLUE);
-					g.fillRect(x * tileSize, y * tileSize, tileSize -1 ,
-							tileSize -1);
-					break;
-					//Verde (grama)
-				case 1:
-					g.setColor(Color.GREEN);
-					g.fillRect(x * tileSize, y * tileSize, tileSize - 1,
-							tileSize - 1);
-					break;
-
-				}
-
 			}
-
 		}
+		
 	}
 
 	// Getters e Setters

@@ -17,8 +17,12 @@ public class Player {
 	private int maxY;
 	private int minY;
 
-	private int velocidade = 3;
-	private boolean direita, esquerda, pulando, caindo;
+	private int velocidade = 1;
+	private boolean direita;
+	private boolean esquerda;
+	private boolean pulando;
+	private boolean caindo;
+	private boolean correndo;
 
 	
 
@@ -33,9 +37,14 @@ public class Player {
 		maxY = (int)GamePanel.GAME_HEIGHT / GamePanel.TILE_SIZE -1;
 		minX = 0;
 		minY = 0;
+		this.correndo = false;
 	}
 
 	public void calcMovimento() {
+		if(correndo)
+			velocidade = 2;
+		else
+			velocidade = 1;
 		if (direita) {
 			dx = x + velocidade;
 			if(dx > maxX){
@@ -79,7 +88,7 @@ public class Player {
 
 		g2d.setColor(Color.RED);
 		g2d.fillRect(x * GamePanel.TILE_SIZE, y * GamePanel.TILE_SIZE,
-				GamePanel.TILE_SIZE - 1, GamePanel.TILE_SIZE - 1);
+				GamePanel.TILE_SIZE, GamePanel.TILE_SIZE );
 
 	}
 	
@@ -94,6 +103,8 @@ public class Player {
 	public void setPulando(boolean pulando) {this.pulando = pulando;}
 	public boolean isCaindo() {	return caindo;}
 	public void setCaindo(boolean caindo) {	this.caindo = caindo;}
+	public boolean isCorrendo() {	return correndo;}
+	public void setCorrendo(boolean correndo) {	this.correndo = correndo;}
 	public int getPlayerX() {return x;}
 	public int getPlayerY() {return y;}
 
