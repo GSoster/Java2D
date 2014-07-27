@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 
 import map.TileMap;
 import entidades.Player;
+import ui.BasicUi;
 
 public class GamePanel extends JPanel implements KeyListener {
 
@@ -24,6 +25,7 @@ public class GamePanel extends JPanel implements KeyListener {
 	private Graphics2D g2d;
 	private TileMap map;
 	private Player player;
+	private BasicUi basicUi;
 
 	private long startTime;
 	private double estimatedTime;
@@ -35,6 +37,7 @@ public class GamePanel extends JPanel implements KeyListener {
 		super();
 		this.map = new TileMap(GAME_WIDTH, GAME_HEIGHT, TILE_SIZE);
 		this.player = new Player();
+		this.basicUi = new BasicUi();
 		setFocusable(true);
 		requestFocus();
 		addKeyListener(this);
@@ -48,6 +51,7 @@ public class GamePanel extends JPanel implements KeyListener {
 	public void draw(Graphics2D g) {
 		this.map.draw(g);
 		this.player.draw(g);
+		this.basicUi.draw(g);
 	}
 
 	public void gameLoop(Graphics g) {
@@ -83,8 +87,10 @@ public class GamePanel extends JPanel implements KeyListener {
 			player.setPulando(true);
 		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN)
 			player.setCaindo(true);
-		if (code == KeyEvent.VK_SHIFT)
+		if (code == KeyEvent.VK_SHIFT){
 			player.setCorrendo(true);
+			basicUi.setShift(true);
+		}
 		
 		//Debug
 		if (code == KeyEvent.VK_G) {
@@ -105,6 +111,7 @@ public class GamePanel extends JPanel implements KeyListener {
 		int code = e.getKeyCode();
 		if (code == KeyEvent.VK_SHIFT)
 			player.setCorrendo(false);
+		basicUi.setShift(false);
 	}
 
 	public void setDebug(boolean debug) {
